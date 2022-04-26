@@ -1,0 +1,51 @@
+#Oppgave 4
+
+#Pakker
+install.packages("plm")
+library(plm)
+
+#Data Frame
+df4 <- data.frame(myData)
+
+#Bearbeidelse
+colnames(myData)[1] <- "Kode"
+colnames(myData)[2] <- "Forkortelse"
+colnames(myData)[3] <- "Land"
+colnames(myData)[4] <- "År"
+colnames(myData)[5] <- "Demokratisk_skala"
+colnames(myData)[6] <- "Innføring_av_stemmerett"
+colnames(myData)[7] <- "År_siden_demokratisk"
+colnames(myData)[8] <- "Primærutdanning"
+colnames(myData)[9] <- "Sekundærutdanning"
+colnames(myData)[10] <- "Tertiærutdanning"
+colnames(myData)[11] <- "Årstall_demokratisering"
+colnames(myData)[12] <- "Demokratisk"
+colnames(myData)[13] <- "Region"
+
+df5 = subset(df4, select = -c(Kode, Forkortelse, Innføring_av_stemmerett, År_siden_demokratisk, Sekundærutdanning, Tertiærutdanning, Demokratisk) )
+
+
+
+#Panelmodellen
+
+
+#Panel_data
+p.data <- pdata.frame(df5, 
+                      index = c("Land" , "År", "Region"))
+
+#(1)
+reg.data <- plm(Primærutdanning ~ Demokratisk_skala,
+                data = p.data,
+                model = "within")
+summary(reg.data)
+fixef(reg.data)
+
+## Som dere ser gir modellen Demokratisk_skala et stigningstall ##
+## på ca. 1,47 +-0,044, som kan tolkes som en signifikant      ##
+## forklaringsvariabel ift primærutdanningen.                 ##
+
+## De faste effekter (intercepten) fanger dermed opp både tid ##
+## og landets fasteeffekter som varierer fra ca. 27% til 93%. ##
+## Spørsmålet mitt om vi kan bruke den genererte data av "fixef" ##
+## - funksjonen, til å illustrere dette grafisk. I tillegg lurte jeg ##
+## på om dere syns at dataframen burde bearbeides mer før plm-analysen ##
